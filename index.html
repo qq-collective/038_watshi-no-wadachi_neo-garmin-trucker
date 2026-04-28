@@ -101,7 +101,8 @@
     font-size: 12px; color: var(--ink2);
     margin-bottom: 1rem; letter-spacing:.04em;
   }
-  .chart-canvas { width:100% !important; }
+  .chart-box { position:relative; width:100%; }
+  .chart-box canvas { position:absolute; top:0; left:0; }
 
   /* LEGEND */
   .legend { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:.8rem; }
@@ -242,7 +243,7 @@
       <div class="legend-item"><div class="legend-dot" style="background:var(--full)"></div>フル PB</div>
       <div class="legend-item"><div class="legend-dot" style="background:rgba(43,95,166,.4)"></div>フル その他</div>
     </div>
-    <canvas id="fullTrendChart" height="220" class="chart-canvas"></canvas>
+    <div class="chart-box" style="height:220px"><canvas id="fullTrendChart"></canvas></div>
   </div>
 
   <div class="chart-wrap">
@@ -252,7 +253,7 @@
       <div class="legend-item"><div class="legend-dot" style="background:var(--half)"></div>ハーフ</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--other)"></div>その他</div>
     </div>
-    <canvas id="timelineChart" height="200" class="chart-canvas"></canvas>
+    <div class="chart-box" style="height:200px"><canvas id="timelineChart"></canvas></div>
   </div>
 </div>
 
@@ -267,17 +268,17 @@
       <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>睡眠スコア（週次）</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--full); border:2px solid white; box-shadow:0 0 0 1px var(--full)"></div>レース</div>
     </div>
-    <canvas id="sleepTrainChart" height="260" class="chart-canvas"></canvas>
+    <div class="chart-box" style="height:260px"><canvas id="sleepTrainChart"></canvas></div>
   </div>
 
   <div class="chart-wrap">
     <div class="chart-label">レース前4週間 練習量 vs タイム</div>
-    <canvas id="preRaceChart" height="220" class="chart-canvas"></canvas>
+    <div class="chart-box" style="height:220px"><canvas id="preRaceChart"></canvas></div>
   </div>
 
   <div class="chart-wrap">
     <div class="chart-label">月別 出走本数 + 平均心拍</div>
-    <canvas id="hrChart" height="180" class="chart-canvas"></canvas>
+    <div class="chart-box" style="height:180px"><canvas id="hrChart"></canvas></div>
   </div>
 </div>
 
@@ -353,6 +354,14 @@
 </div>
 
 <script>
+// Chart.js global defaults
+window.addEventListener('load', () => {
+  if(window.Chart) {
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+  }
+});
+
 // ===== DATA =====
 const RUNNET = [
   {date:"2026-03-08",name:"静岡マラソン2026",dist:42.195,time:"3:46:30",timeMins:226.5,rank:"3675/9905",type:"full"},
@@ -800,10 +809,13 @@ function handleSleepUpload(e) {
 }
 
 // ===== BOOT =====
-initStats();
-initCharts();
-initRaceTable();
-initDiagnosis();
+document.addEventListener('DOMContentLoaded', () => {
+  initStats();
+  initRaceTable();
+  initDiagnosis();
+  // Chart.js needs a tick after DOM is ready
+  setTimeout(initCharts, 50);
+});
 </script>
 </body>
 </html>

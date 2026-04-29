@@ -327,30 +327,73 @@
 
 <!-- PAGE: DATA -->
 <div class="page" id="page-data">
-  <div class="sec-title">データ管理</div>
-  <div class="upload-section">
-    <div style="font-size:13px;color:var(--ink2);margin-bottom:1rem;line-height:1.8;">
-      GarminのCSVをアップロードしてデータを更新できます。現在は2024年10月〜のGarminデータが読み込まれています。
-    </div>
-    <div class="upload-grid">
-      <label class="upload-card">
-        <input type="file" accept=".csv,.xlsx" onchange="handleGarminUpload(event)">
-        <div class="upload-icon">🏃</div>
-        <div class="upload-name">Garmin アクティビティ</div>
-        <div class="upload-status" id="garminStatus">CSV/XLSXをドロップ</div>
-      </label>
-      <label class="upload-card">
-        <input type="file" accept=".csv" onchange="handleSleepUpload(event)">
-        <div class="upload-icon">😴</div>
-        <div class="upload-name">睡眠データ</div>
-        <div class="upload-status" id="sleepStatus">CSV/XLSXをドロップ</div>
-      </label>
-    </div>
+  <div class="sec-title">データ更新 — v0.2.0</div>
+
+  <div style="font-size:13px;color:var(--ink2);margin-bottom:1.5rem;line-height:1.9;background:var(--bg2);padding:1rem;border-left:3px solid var(--accent);">
+    <strong style="color:var(--ink);">読み込みルール</strong><br>
+    パワークエリで整形済みのCSVを渡してください。アップロード後、グラフが即時更新されます。<br>
+    過去データを含む完全版CSVを毎回渡す方式（全量上書き）。
   </div>
 
+  <div class="upload-grid" style="margin-bottom:1.5rem;">
+    <label class="upload-card" id="garminCard">
+      <input type="file" accept=".csv" id="garminFileInput" onchange="handleGarminUpload(event)">
+      <div class="upload-icon">🏃</div>
+      <div class="upload-name">Garmin アクティビティ</div>
+      <div style="font-size:10px;color:var(--ink3);margin-bottom:.4rem;">wadachi_garmin.csv</div>
+      <div class="upload-status" id="garminStatus">クリックしてCSVを選択</div>
+    </label>
+    <label class="upload-card" id="sleepCard">
+      <input type="file" accept=".csv" id="sleepFileInput" onchange="handleSleepUpload(event)">
+      <div class="upload-icon">😴</div>
+      <div class="upload-name">睡眠データ</div>
+      <div style="font-size:10px;color:var(--ink3);margin-bottom:.4rem;">wadachi_sleep.csv</div>
+      <div class="upload-status" id="sleepStatus">クリックしてCSVを選択</div>
+    </label>
+  </div>
+
+  <div id="uploadLog" style="font-size:12px;color:var(--ink3);font-family:'Space Mono',monospace;min-height:1.5rem;margin-bottom:1.5rem;"></div>
+
   <div class="divider"></div>
-  <div class="sec-title">主観タグ追加</div>
-  <div style="font-size:13px;color:var(--ink2);margin-bottom:1rem;">レースに主観タグ・コメントを追加できます（今後実装予定）</div>
+  <div class="sec-title">レース手動追加</div>
+  <div style="font-size:13px;color:var(--ink2);margin-bottom:1rem;line-height:1.8;">
+    RUNNETに登録されていないレースを追加できます。追加データはブラウザに保存されます。
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-bottom:1rem;">
+    <div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:.3rem;">開催日 *</div>
+      <input type="date" id="manualDate" style="width:100%;padding:.5rem .7rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;outline:none;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:.3rem;">大会名 *</div>
+      <input type="text" id="manualName" placeholder="例：糸島トレイルレース" style="width:100%;padding:.5rem .7rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;outline:none;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:.3rem;">距離(km) *</div>
+      <input type="number" id="manualDist" placeholder="42.195" step="0.001" style="width:100%;padding:.5rem .7rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;outline:none;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:.3rem;">タイム *</div>
+      <input type="text" id="manualTime" placeholder="3:45:00" style="width:100%;padding:.5rem .7rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;outline:none;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:.3rem;">種別</div>
+      <select id="manualType" style="width:100%;padding:.5rem .7rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;outline:none;">
+        <option value="full">フルマラソン</option>
+        <option value="half">ハーフ</option>
+        <option value="trail">トレラン</option>
+        <option value="other">その他</option>
+      </select>
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:.3rem;">順位（任意）</div>
+      <input type="text" id="manualRank" placeholder="123/456" style="width:100%;padding:.5rem .7rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;outline:none;">
+    </div>
+  </div>
+  <button class="btn" onclick="addManualRace()">追加する</button>
+
+  <div id="manualRaceList" style="margin-top:1.5rem;"></div>
 </div>
 
 <script>
@@ -778,20 +821,6 @@ function handleKey(e) {
   if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendChat(); }
 }
 
-// Suggestion chips
-const suggestions = [
-  '次のレースに向けてアドバイスをください',
-  '睡眠と練習量の相関を教えて',
-  'PB更新のために何が必要ですか',
-  '静岡3:46の原因分析をして',
-];
-document.addEventListener('DOMContentLoaded', ()=>{
-  const s = document.getElementById('suggestions');
-  s.innerHTML = suggestions.map(q=>`<button class="btn btn-sm btn-outline" onclick="document.getElementById('chatInput').value='${q}';sendChat()">${q}</button>`).join('');
-  const key = localStorage.getItem('wadachi_api_key');
-  if(key) document.getElementById('apiKeyInput').value = key;
-});
-
 // ===== NAVIGATION =====
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -800,21 +829,230 @@ function showPage(id) {
   event.target.classList.add('active');
 }
 
-// ===== FILE UPLOAD =====
-function handleGarminUpload(e) {
-  document.getElementById('garminStatus').textContent = e.target.files[0]?.name+' — 読み込み完了（次バージョンで反映）';
+// ===== CSV PARSE HELPERS =====
+function parseCSVText(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).map(line => {
+    const vals = line.split(',').map(v=>v.trim().replace(/^"|"$/g,''));
+    const obj = {};
+    headers.forEach((h,i) => obj[h] = vals[i]||'');
+    return obj;
+  });
 }
+
+function timeStrToMins(t) {
+  if(!t) return null;
+  const parts = t.split(':');
+  if(parts.length===3) return +parts[0]*60 + +parts[1] + +parts[2]/60;
+  if(parts.length===2) return +parts[0]*60 + +parts[1];
+  return null;
+}
+
+function destroyCharts() {
+  Chart.helpers.each(Chart.instances, chart => chart.destroy());
+}
+
+// ===== GARMIN CSV UPLOAD =====
+function handleGarminUpload(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const rows = parseCSVText(ev.target.result);
+      // Filter: exclude treadmill, 0km, non-run
+      const cleaned = rows.filter(r => {
+        const title = (r['タイトル']||r['Title']||'').toLowerCase();
+        const dist = parseFloat(r['距離']||r['Distance']||0);
+        const type = (r['アクティビティタイプ']||r['Activity Type']||'').toLowerCase();
+        if(title.includes('トレッドミル') || title.includes('treadmill')) return false;
+        if(type.includes('トレッドミル') || type.includes('treadmill')) return false;
+        if(dist < 0.5) return false;
+        return true;
+      });
+
+      // Build monthly summary
+      const monthMap = {};
+      cleaned.forEach(r => {
+        const dateRaw = r['日付']||r['Date']||'';
+        const dateStr = dateRaw.slice(0,7).replace(/\//g,'-');
+        if(!dateStr.match(/^\d{4}-\d{2}$/)) return;
+        const km = parseFloat(r['距離']||0);
+        const hr = parseFloat(r['平均心拍数']||0);
+        if(!monthMap[dateStr]) monthMap[dateStr] = {m:dateStr,km:0,runs:0,hr_sum:0,hr_count:0};
+        monthMap[dateStr].km += km;
+        monthMap[dateStr].runs += 1;
+        if(hr>0){ monthMap[dateStr].hr_sum+=hr; monthMap[dateStr].hr_count+=1; }
+      });
+
+      const newMonthly = Object.values(monthMap)
+        .sort((a,b)=>a.m.localeCompare(b.m))
+        .map(m=>({m:m.m, km:Math.round(m.km*10)/10, runs:m.runs, avg_hr:m.hr_count?Math.round(m.hr_sum/m.hr_count*10)/10:0}));
+
+      // Update global
+      MONTHLY.length = 0;
+      newMonthly.forEach(m=>MONTHLY.push(m));
+
+      const log = document.getElementById('uploadLog');
+      log.textContent = `✓ Garmin: ${cleaned.length}件読み込み（${newMonthly.length}ヶ月分）トレッドミル等 ${rows.length-cleaned.length}件除外`;
+      document.getElementById('garminStatus').textContent = `✓ ${file.name}`;
+      document.getElementById('garminCard').style.borderColor = 'var(--accent3)';
+
+      destroyCharts();
+      initCharts();
+      initStats();
+    } catch(err) {
+      document.getElementById('uploadLog').textContent = 'エラー: '+err.message;
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+// ===== SLEEP CSV UPLOAD =====
 function handleSleepUpload(e) {
-  document.getElementById('sleepStatus').textContent = e.target.files[0]?.name+' — 読み込み完了（次バージョンで反映）';
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const text = ev.target.result;
+      const lines = text.trim().split('\n');
+      const newSleep = [];
+      let currentYear = new Date().getFullYear();
+
+      for(let i=1; i<lines.length; i++) {
+        const parts = lines[i].split(',').map(p=>p.trim().replace(/^"|"$/g,''));
+        // Detect year row
+        const yearMatch = parts.find(p=>/^20\d\d$/.test(p));
+        if(yearMatch) { currentYear = parseInt(yearMatch); continue; }
+
+        const dateRaw = parts[0];
+        if(!dateRaw) continue;
+
+        // Parse score
+        let score = null;
+        for(const p of parts) {
+          const n = parseInt(p);
+          if(!isNaN(n) && n>=20 && n<=100) { score=n; break; }
+        }
+        if(!score) continue;
+
+        // Parse duration
+        let durMins = null;
+        for(const p of parts) {
+          const m = p.match(/(\d+)h\s*(\d+)分/);
+          if(m){ durMins = parseInt(m[1])*60+parseInt(m[2]); break; }
+        }
+
+        // Parse month
+        const mMatch = dateRaw.match(/(\d+)[\/月]/);
+        if(!mMatch) continue;
+        const month = parseInt(mMatch[1]);
+        const ym = `${currentYear}-${String(month).padStart(2,'0')}`;
+        newSleep.push({ym, score, dur:durMins||0});
+      }
+
+      SLEEP.length = 0;
+      newSleep.forEach(s=>SLEEP.push(s));
+
+      const log = document.getElementById('uploadLog');
+      log.textContent += `  ✓ 睡眠: ${newSleep.length}週分読み込み`;
+      document.getElementById('sleepStatus').textContent = `✓ ${file.name}`;
+      document.getElementById('sleepCard').style.borderColor = 'var(--accent3)';
+
+      destroyCharts();
+      initCharts();
+    } catch(err) {
+      document.getElementById('uploadLog').textContent = 'エラー: '+err.message;
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+// ===== MANUAL RACE ADD =====
+function addManualRace() {
+  const date = document.getElementById('manualDate').value;
+  const name = document.getElementById('manualName').value.trim();
+  const dist = parseFloat(document.getElementById('manualDist').value);
+  const time = document.getElementById('manualTime').value.trim();
+  const type = document.getElementById('manualType').value;
+  const rank = document.getElementById('manualRank').value.trim();
+
+  if(!date||!name||!dist||!time){ alert('開催日・大会名・距離・タイムは必須です'); return; }
+  const timeMins = timeStrToMins(time);
+  if(!timeMins){ alert('タイム形式: 3:45:00 または 1:39:00'); return; }
+
+  const race = {date,name,dist,time,timeMins,rank,type,manual:true};
+
+  // Save to localStorage
+  const saved = JSON.parse(localStorage.getItem('wadachi_manual_races')||'[]');
+  saved.push(race);
+  localStorage.setItem('wadachi_manual_races', JSON.stringify(saved));
+
+  // Add to RUNNET array
+  RUNNET.push(race);
+  RUNNET.sort((a,b)=>b.date.localeCompare(a.date));
+
+  // Clear form
+  ['manualDate','manualName','manualDist','manualTime','manualRank'].forEach(id=>document.getElementById(id).value='');
+
+  renderManualList();
+  destroyCharts();
+  initCharts();
+  initRaceTable();
+  initStats();
+  alert(`✓ ${name} を追加しました`);
+}
+
+function renderManualList() {
+  const saved = JSON.parse(localStorage.getItem('wadachi_manual_races')||'[]');
+  const el = document.getElementById('manualRaceList');
+  if(!saved.length){ el.innerHTML=''; return; }
+  el.innerHTML = `
+    <div class="sec-title" style="margin-top:0">手動追加済み（${saved.length}件）</div>
+    <table class="race-table">
+      <thead><tr><th>日付</th><th>大会名</th><th>距離</th><th>タイム</th><th>種別</th><th></th></tr></thead>
+      <tbody>${saved.map((r,i)=>`<tr>
+        <td>${r.date}</td><td>${r.name}</td><td>${r.dist}km</td>
+        <td style="font-family:'Space Mono',monospace">${r.time}</td>
+        <td><span class="badge badge-${r.type==='trail'?'other':r.type}">${r.type==='trail'?'トレラン':r.type==='full'?'フル':r.type==='half'?'ハーフ':'その他'}</span></td>
+        <td><button class="btn btn-sm" style="background:transparent;color:var(--ink3);border:1px solid var(--line)" onclick="deleteManualRace(${i})">削除</button></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+function deleteManualRace(idx) {
+  const saved = JSON.parse(localStorage.getItem('wadachi_manual_races')||'[]');
+  saved.splice(idx,1);
+  localStorage.setItem('wadachi_manual_races', JSON.stringify(saved));
+  // Reload page data
+  location.reload();
 }
 
 // ===== BOOT =====
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
+  // Restore manual races from localStorage
+  const saved = JSON.parse(localStorage.getItem('wadachi_manual_races')||'[]');
+  saved.forEach(r=>RUNNET.push(r));
+  RUNNET.sort((a,b)=>b.date.localeCompare(a.date));
+
   initStats();
   initRaceTable();
   initDiagnosis();
-  // Chart.js needs a tick after DOM is ready
-  setTimeout(initCharts, 50);
+  initCharts();
+  renderManualList();
+
+  // Suggestions
+  const s = document.getElementById('suggestions');
+  if(s) s.innerHTML = [
+    '次のレースに向けてアドバイスをください',
+    '睡眠と練習量の相関を教えて',
+    'PB更新のために何が必要ですか',
+    '静岡3:46の原因分析をして',
+  ].map(q=>`<button class="btn btn-sm btn-outline" onclick="document.getElementById('chatInput').value='${q}'">${q}</button>`).join('');
+  const key = localStorage.getItem('wadachi_api_key');
+  if(key) document.getElementById('apiKeyInput').value = key;
 });
 </script>
 </body>

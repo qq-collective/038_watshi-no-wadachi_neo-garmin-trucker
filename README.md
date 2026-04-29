@@ -1,4 +1,4 @@
-# 私の轍 — Watashi no Wadachi
+# 私の轍 — Watashi no Wadachi neo Garmin Trucker
 
 > Garmin Dataをプルで集め、自分像を浮かび上がらせる。
 
